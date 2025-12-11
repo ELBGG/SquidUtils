@@ -1,12 +1,9 @@
-package me.elb.squidutils.api;
+package me.elb.squidutils. api;
 
-import me.elb.squidutils.net.BlurEffectPacket;
+import me.elb.squidutils. net.BlurEffectPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class BlurEffectAPI {
 
@@ -21,7 +18,7 @@ public class BlurEffectAPI {
     public static void enableBlurTemporary(ServerPlayerEntity player, long durationMs, int hexColor) {
         enableBlur(player, hexColor);
         long removalTime = System.currentTimeMillis() + durationMs;
-        temporaryBlurs.put(player. getUuid(), removalTime);
+        temporaryBlurs.put(player.getUuid(), removalTime);
     }
 
     /**
@@ -30,7 +27,7 @@ public class BlurEffectAPI {
     public static void enableBlurTemporary(ServerPlayerEntity player, long durationMs,
                                            float borderWidth, float blurIntensity, int hexColor) {
         enableBlur(player, borderWidth, blurIntensity, hexColor);
-        long removalTime = System. currentTimeMillis() + durationMs;
+        long removalTime = System.currentTimeMillis() + durationMs;
         temporaryBlurs.put(player.getUuid(), removalTime);
     }
 
@@ -39,21 +36,29 @@ public class BlurEffectAPI {
      * Llama esto desde tu ServerTickEvents
      */
     public static void tick(net.minecraft.server.MinecraftServer server) {
-        long now = System.currentTimeMillis();
-        Iterator<Map. Entry<UUID, Long>> iterator = temporaryBlurs.entrySet().iterator();
+        if (temporaryBlurs.isEmpty()) return;
 
-        while (iterator.hasNext()) {
-            Map.Entry<UUID, Long> entry = iterator.next();
+        long now = System.currentTimeMillis();
+
+        // Crear lista de UUIDs a remover (evita ConcurrentModificationException)
+        List<UUID> toRemove = new ArrayList<>();
+
+        for (Map.Entry<UUID, Long> entry : temporaryBlurs.entrySet()) {
             UUID playerUUID = entry.getKey();
             long scheduledTime = entry.getValue();
 
             if (now >= scheduledTime) {
-                ServerPlayerEntity player = server. getPlayerManager().getPlayer(playerUUID);
+                ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
                 if (player != null) {
                     disableBlur(player);
                 }
-                iterator.remove();
+                toRemove.add(playerUUID);
             }
+        }
+
+        // Remover después de iterar
+        for (UUID uuid :  toRemove) {
+            temporaryBlurs.remove(uuid);
         }
     }
 
@@ -70,7 +75,7 @@ public class BlurEffectAPI {
         float g = ((hexColor >> 8) & 0xFF) / 255.0F;
         float b = (hexColor & 0xFF) / 255.0F;
 
-        BlurEffectPacket.send(player, true, borderWidth, blurIntensity, r, g, b);
+        BlurEffectPacket. send(player, true, borderWidth, blurIntensity, r, g, b);
     }
 
     public static void enableBlur(ServerPlayerEntity player, float borderWidth, float blurIntensity, float r, float g, float b) {
