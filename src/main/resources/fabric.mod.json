@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "squidutils",
+  "version": "${version}",
+  "name": "SquidUtils",
+  "description": "buscamina que si es un buscamina",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/squidutils/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "me.elb.squidutils.client.SquidutilsClient"
+    ],
+    "main": [
+      "me.elb.squidutils.Squidutils"
+    ]
+  },
+  "mixins": [
+    "squidutils.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
