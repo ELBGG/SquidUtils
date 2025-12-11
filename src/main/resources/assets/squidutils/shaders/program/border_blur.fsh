@@ -1,73 +1,45 @@
 #version 150
-// The game's render output
+
 uniform sampler2D DiffuseSampler;
-
-// The texture coordinate represented as a 2D vector (x,y)
 in vec2 texCoord;
-
-// The output color of each pixel represented as a 4D vector (r,g,b,a)
 out vec4 fragColor;
 
 // Uniforms
 uniform vec2 InSize;
 uniform vec2 OutSize;
 
-// Parámetros configurables para el efecto
-uniform float BorderWidth;      // Ancho del borde (0.0 a 0.5)
-uniform float BlurIntensity;    // Intensidad del blur
-uniform vec3 TintColor;         // Color del tinte
+// Parámetros configurables
+uniform float BorderWidth;      // Ancho de la viñeta (0.0 a 1.0)
+uniform float BlurIntensity;    // Intensidad del color (0.0 a 1.0)
+uniform vec3 TintColor;         // Color de la viñeta
 
 void main() {
-    // Calcular la distancia desde el centro de la pantalla
-    vec2 center = vec2(0.5, 0.5);
-    vec2 dist = abs(texCoord - center);
-
-    // Calcular qué tan cerca está el píxel del borde
-    // 0.0 = centro, 1.0 = borde
-    float edgeDistance = max(dist. x, dist.y) * 2.0;
-
-    // Suavizar la transición del efecto
-    float borderFactor = smoothstep(1.0 - BorderWidth, 1.0, edgeDistance);
-
-    // Aplicar blur en los bordes
-    vec4 blurredColor = vec4(0.0);
-
-    if (borderFactor > 0.01) {
-        // Número de muestras para el blur
-        int samples = 9;
-
-        // Calcular el offset basado en el tamaño de la pantalla
-        vec2 pixelSize = 1.0 / InSize;
-        vec2 offset = pixelSize * BlurIntensity * 2.0;
-
-        // Kernel de blur gaussiano simplificado
-        float totalWeight = 0.0;
-
-        for (int x = -samples/2; x <= samples/2; x++) {
-            for (int y = -samples/2; y <= samples/2; y++) {
-                vec2 sampleCoord = texCoord + vec2(float(x), float(y)) * offset;
-
-                // Peso gaussiano simple
-                float weight = 1.0 - (length(vec2(x, y)) / float(samples));
-                weight = max(weight, 0.1);
-
-                blurredColor += texture(DiffuseSampler, sampleCoord) * weight;
-                totalWeight += weight;
-            }
-        }
-
-        blurredColor /= totalWeight;
-    }
-
-    // Color original sin blur
+    // Color original del pixel
     vec4 original = texture(DiffuseSampler, texCoord);
 
-    // Mezclar entre el color original y el blur según la distancia al borde
-    vec4 result = mix(original, blurredColor, borderFactor);
+    // Calcular distancia desde el centro (0.0 en centro, 1.0 en esquinas)
+    vec2 center = vec2(0.5, 0.5);
+    vec2 toCenter = texCoord - center;
 
-    // Aplicar tinte de color en los bordes (más sutil)
-    result.rgb = mix(result.rgb, result. rgb * TintColor, borderFactor * 0.3);
+    // Distancia radial desde el centro
+    float distance = length(toCenter);
 
-    // Set the fragColor output as the result
-    fragColor = result;
+    // Normalizar para que las esquinas también se vean afectadas
+    // Ajustamos la distancia para que sea más cuadrada en lugar de circular
+    float distanceSquared = max(abs(toCenter.x), abs(toCenter.y)) * 2.0;
+
+    // Crear gradiente suave desde el borde hacia el centro
+    float vignette = smoothstep(1.0 - BorderWidth, 1.0, distanceSquared);
+
+    // Aplicar intensidad al efecto
+    vignette *= BlurIntensity;
+
+    // Mezclar el color original con el tinte de color
+    vec3 tintedColor = mix(original. rgb, TintColor, vignette * 0.6);
+
+    // Oscurecer ligeramente los bordes para efecto más dramático
+    float darken = 1.0 - (vignette * 0.3);
+    tintedColor *= darken;
+
+    fragColor = vec4(tintedColor, original.a);
 }

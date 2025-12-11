@@ -1,10 +1,10 @@
-package me.elb.squidutils. client;
+package me. elb.squidutils.client;
 
-import net.minecraft. client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.MinecraftClient;
+import net. minecraft.client.font.TextRenderer;
 import net. minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft.client.util. math.MatrixStack;
+import net.minecraft. client.util.math.MatrixStack;
 
 public class PlayerTitleRenderer {
 
@@ -12,64 +12,89 @@ public class PlayerTitleRenderer {
         if (!ClientPlayerTitle.isEnabled()) return;
 
         MinecraftClient client = MinecraftClient.getInstance();
-        if (client.player == null) return;
+        if (client. player == null) return;
 
         String title = ClientPlayerTitle.getTitle();
         String subtitle = ClientPlayerTitle.getSubtitle();
 
         if (title.isEmpty() && subtitle.isEmpty()) return;
 
+        // Obtener alpha actual (para fade out)
+        float alpha = ClientPlayerTitle.getCurrentAlpha();
+        if (alpha <= 0.0F) return;
+
         TextRenderer textRenderer = client.textRenderer;
         int screenWidth = client.getWindow().getScaledWidth();
         int screenHeight = client.getWindow().getScaledHeight();
 
-        // Calcular posición central
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
 
-        // Aplicar offsets
         float offsetX = ClientPlayerTitle.getOffsetX();
         float offsetY = ClientPlayerTitle.getOffsetY();
-        float scale = ClientPlayerTitle.getScale();
 
         MatrixStack matrices = context.getMatrices();
-        matrices.push();
 
-        // Aplicar escala
-        matrices.scale(scale, scale, scale);
+        // Renderizar título (más grande)
+        if (!title.isEmpty()) {
+            matrices.push();
 
-        // Ajustar posiciones por la escala
-        int scaledCenterX = (int) (centerX / scale);
-        int scaledCenterY = (int) (centerY / scale);
-        int scaledOffsetX = (int) (offsetX / scale);
-        int scaledOffsetY = (int) (offsetY / scale);
-
-        // Renderizar título
-        if (!title. isEmpty()) {
-            int titleWidth = textRenderer.getWidth(title);
-            int titleX = scaledCenterX - (titleWidth / 2) + scaledOffsetX;
-            int titleY = scaledCenterY + scaledOffsetY;
+            float titleScale = ClientPlayerTitle.getTitleScale();
             int titleColor = ClientPlayerTitle.getTitleColor();
 
-            // Sombra del título
-            context. drawText(textRenderer, title, titleX + 1, titleY + 1, 0x000000, false);
-            // Título con color
-            context.drawText(textRenderer, title, titleX, titleY, titleColor | 0xFF000000, false);
+            // Aplicar alpha al color
+            int alphaInt = (int) (alpha * 255);
+            int titleColorWithAlpha = (alphaInt << 24) | (titleColor & 0x00FFFFFF);
+            int shadowColor = (alphaInt << 24);
+
+            // Calcular posición centrada
+            int titleWidth = textRenderer.getWidth(title);
+            float scaledTitleWidth = titleWidth * titleScale;
+
+            float titleX = centerX - (scaledTitleWidth / 2) + offsetX;
+            float titleY = centerY + offsetY;
+
+            // Escalar para el título
+            matrices.translate(titleX, titleY, 0);
+            matrices.scale(titleScale, titleScale, titleScale);
+
+            // Sombra
+            context.drawText(textRenderer, title, 1, 1, shadowColor, false);
+            // Texto principal
+            context.drawText(textRenderer, title, 0, 0, titleColorWithAlpha, false);
+
+            matrices.pop();
         }
 
-        // Renderizar subtítulo (siempre blanco)
+        // Renderizar subtítulo (tamaño normal, debajo del título)
         if (!subtitle.isEmpty()) {
+            matrices.push();
+
+            float subtitleScale = ClientPlayerTitle. getSubtitleScale();
+            int subtitleColor = 0xFFFFFF; // Siempre blanco
+
+            // Aplicar alpha
+            int alphaInt = (int) (alpha * 255);
+            int subtitleColorWithAlpha = (alphaInt << 24) | (subtitleColor & 0x00FFFFFF);
+            int shadowColor = (alphaInt << 24);
+
             int subtitleWidth = textRenderer.getWidth(subtitle);
-            int subtitleX = scaledCenterX - (subtitleWidth / 2) + scaledOffsetX;
-            int subtitleY = scaledCenterY + scaledOffsetY + (int)(12 * scale); // 12 píxeles debajo del título
-            int subtitleColor = 0xFFFFFF;
+            float scaledSubtitleWidth = subtitleWidth * subtitleScale;
 
-            // Sombra del subtítulo
-            context.drawText(textRenderer, subtitle, subtitleX + 1, subtitleY + 1, 0x000000, false);
-            // Subtítulo blanco
-            context.drawText(textRenderer, subtitle, subtitleX, subtitleY, subtitleColor | 0xFF000000, false);
+            // Posición:  debajo del título
+            float titleHeight = 9 * ClientPlayerTitle.getTitleScale(); // Altura aproximada del título
+            float subtitleX = centerX - (scaledSubtitleWidth / 2) + offsetX;
+            float subtitleY = centerY + offsetY + titleHeight + 5; // 5 píxeles de separación
+
+            matrices.translate(subtitleX, subtitleY, 0);
+            matrices.scale(subtitleScale, subtitleScale, subtitleScale);
+
+            // Sombra
+            context.drawText(textRenderer, subtitle, 1, 1, shadowColor, false);
+            // Texto principal
+            context. drawText(textRenderer, subtitle, 0, 0, subtitleColorWithAlpha, false);
+
+            matrices.pop();
         }
-
-        matrices. pop();
     }
 }
