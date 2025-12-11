@@ -3,74 +3,90 @@ package me.elb.squidutils.api;
 import me.elb.squidutils.net.BlurEffectPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-/**
- * API del servidor para controlar el efecto de blur en los bordes de la pantalla del jugador
- */
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
 public class BlurEffectAPI {
 
+    private static final Map<UUID, Long> temporaryBlurs = new HashMap<>();
+
     /**
-     * Activa el efecto de blur con valores por defecto
-     * @param player El jugador al que se le aplicará el efecto
+     * Activa el efecto de blur temporalmente
+     * @param player El jugador
+     * @param durationMs Duración en milisegundos
+     * @param hexColor Color en formato 0xRRGGBB
      */
-    public static void enableBlur(ServerPlayerEntity player) {
-        enableBlur(player, 0.25F, 1.0F, 0xFF00FF); // Magenta por defecto
+    public static void enableBlurTemporary(ServerPlayerEntity player, long durationMs, int hexColor) {
+        enableBlur(player, hexColor);
+        long removalTime = System.currentTimeMillis() + durationMs;
+        temporaryBlurs.put(player. getUuid(), removalTime);
     }
 
     /**
-     * Activa el efecto de blur con color personalizado
-     * @param player El jugador al que se le aplicará el efecto
-     * @param hexColor Color en formato 0xRRGGBB
+     * Activa el efecto de blur temporalmente con parámetros completos
      */
+    public static void enableBlurTemporary(ServerPlayerEntity player, long durationMs,
+                                           float borderWidth, float blurIntensity, int hexColor) {
+        enableBlur(player, borderWidth, blurIntensity, hexColor);
+        long removalTime = System. currentTimeMillis() + durationMs;
+        temporaryBlurs.put(player.getUuid(), removalTime);
+    }
+
+    /**
+     * Debe llamarse cada tick para manejar blur temporales
+     * Llama esto desde tu ServerTickEvents
+     */
+    public static void tick(net.minecraft.server.MinecraftServer server) {
+        long now = System.currentTimeMillis();
+        Iterator<Map. Entry<UUID, Long>> iterator = temporaryBlurs.entrySet().iterator();
+
+        while (iterator.hasNext()) {
+            Map.Entry<UUID, Long> entry = iterator.next();
+            UUID playerUUID = entry.getKey();
+            long scheduledTime = entry.getValue();
+
+            if (now >= scheduledTime) {
+                ServerPlayerEntity player = server. getPlayerManager().getPlayer(playerUUID);
+                if (player != null) {
+                    disableBlur(player);
+                }
+                iterator.remove();
+            }
+        }
+    }
+
+    public static void enableBlur(ServerPlayerEntity player) {
+        enableBlur(player, 0.25F, 1.0F, 0xFF00FF);
+    }
+
     public static void enableBlur(ServerPlayerEntity player, int hexColor) {
         enableBlur(player, 0.25F, 1.0F, hexColor);
     }
 
-    /**
-     * Activa el efecto de blur con parámetros personalizados
-     * @param player El jugador al que se le aplicará el efecto
-     * @param borderWidth Ancho del borde (0.0 - 0.5, recomendado 0.25)
-     * @param blurIntensity Intensidad del blur (0.5 - 2.0, recomendado 1.0)
-     * @param hexColor Color en formato 0xRRGGBB
-     */
     public static void enableBlur(ServerPlayerEntity player, float borderWidth, float blurIntensity, int hexColor) {
         float r = ((hexColor >> 16) & 0xFF) / 255.0F;
         float g = ((hexColor >> 8) & 0xFF) / 255.0F;
         float b = (hexColor & 0xFF) / 255.0F;
-        
-        BlurEffectPacket. send(player, true, borderWidth, blurIntensity, r, g, b);
+
+        BlurEffectPacket.send(player, true, borderWidth, blurIntensity, r, g, b);
     }
 
-    /**
-     * Activa el efecto de blur con colores RGB
-     * @param player El jugador al que se le aplicará el efecto
-     * @param borderWidth Ancho del borde (0.0 - 0.5)
-     * @param blurIntensity Intensidad del blur (0.5 - 2.0)
-     * @param r Componente rojo (0.0 - 1.0)
-     * @param g Componente verde (0.0 - 1.0)
-     * @param b Componente azul (0.0 - 1.0)
-     */
     public static void enableBlur(ServerPlayerEntity player, float borderWidth, float blurIntensity, float r, float g, float b) {
         BlurEffectPacket.send(player, true, borderWidth, blurIntensity, r, g, b);
     }
 
-    /**
-     * Desactiva el efecto de blur
-     * @param player El jugador al que se le desactivará el efecto
-     */
     public static void disableBlur(ServerPlayerEntity player) {
-        BlurEffectPacket. send(player, false, 0.25F, 1.0F, 1.0F, 0.0F, 1.0F);
+        BlurEffectPacket.send(player, false, 0.25F, 1.0F, 1.0F, 0.0F, 1.0F);
+        temporaryBlurs.remove(player.getUuid());
     }
 
-    /**
-     * Actualiza solo el color del blur sin cambiar otros parámetros
-     * @param player El jugador
-     * @param hexColor Nuevo color en formato 0xRRGGBB
-     */
     public static void updateColor(ServerPlayerEntity player, int hexColor) {
         enableBlur(player, 0.25F, 1.0F, hexColor);
     }
 
-    // Colores predefinidos para facilitar el uso
+    // Colores predefinidos
     public static final int COLOR_RED = 0xFF0000;
     public static final int COLOR_GREEN = 0x00FF00;
     public static final int COLOR_BLUE = 0x0000FF;
