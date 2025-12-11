@@ -3,36 +3,32 @@ package me.elb.squidutils.client;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.util.Identifier;
-import org.joml.Vector2f;
-import org.joml.Vector3f;
+import net.minecraft.util. Identifier;
 import org.ladysnake.satin.api.managed.ManagedShaderEffect;
-import org.ladysnake.satin.api.managed.ShaderEffectManager;
+import org.ladysnake.satin.api. managed.ShaderEffectManager;
 
-@Environment(EnvType.CLIENT)
-public class ScreenMinimizeShader {
+@Environment(EnvType. CLIENT)
+public class ScreenBlurShader {
 
-    private static ScreenMinimizeShader INSTANCE;
+    private static ScreenBlurShader INSTANCE;
 
     private final ManagedShaderEffect shaderEffect;
     public boolean enabled = false;
-    public Vector3f scale = new Vector3f(1.0F, 1.0F, 1.0F);
-    public Vector2f offset = new Vector2f(0.0F, 0.0F);
 
-    private ScreenMinimizeShader() {
+    private ScreenBlurShader() {
         shaderEffect = ShaderEffectManager.getInstance().manage(
-                Identifier.tryParse("instrucciones", "shaders/post/minimize.json"),
+                Identifier.tryParse("squidutils", "shaders/post/border_blur.json"),
                 shader -> {}
         );
     }
 
     public static void initialize() {
         if (INSTANCE == null) {
-            INSTANCE = new ScreenMinimizeShader();
+            INSTANCE = new ScreenBlurShader();
         }
     }
 
-    public static ScreenMinimizeShader get() {
+    public static ScreenBlurShader get() {
         if (INSTANCE == null) {
             initialize();
         }
@@ -46,7 +42,7 @@ public class ScreenMinimizeShader {
             return;
         }
 
-        boolean shouldEnable = ClientPlayerMin.isEnabled();
+        boolean shouldEnable = ClientPlayerColor.isEnabled();
         if (shouldEnable != enabled) {
             enabled = shouldEnable;
         }
@@ -55,10 +51,13 @@ public class ScreenMinimizeShader {
     public void beforeProcess() {
         if (!enabled) return;
 
-        shaderEffect.setUniformValue("WindowPos",
-                ClientPlayerMin.getPosX(), ClientPlayerMin.getPosY());
-        shaderEffect.setUniformValue("WindowSize",
-                ClientPlayerMin.getSizeX(), ClientPlayerMin.getSizeY());
+        // Actualizar los parámetros del shader desde ClientPlayerColor
+        shaderEffect. setUniformValue("BorderWidth", ClientPlayerColor.getBorderWidth());
+        shaderEffect.setUniformValue("BlurIntensity", ClientPlayerColor.getBlurIntensity());
+        shaderEffect.setUniformValue("TintColor",
+                ClientPlayerColor.getColorR(),
+                ClientPlayerColor.getColorG(),
+                ClientPlayerColor.getColorB());
     }
 
     public void render(float tickDelta) {

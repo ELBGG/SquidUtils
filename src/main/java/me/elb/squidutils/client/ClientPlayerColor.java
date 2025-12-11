@@ -1,49 +1,72 @@
 package me.elb.squidutils.client;
 
-public class ClientPlayerMin {
+public class ClientPlayerColor {
    private static boolean enabled;
-   private static float posX;
-   private static float posY;
-   private static float sizeX;
-   private static float sizeY;
+   private static float borderWidth = 0.25F;
+   private static float blurIntensity = 1.0F;
+   private static float colorR = 1.0F;
+   private static float colorG = 0.0F;
+   private static float colorB = 1.0F;
 
    public static void setEnabled(boolean enabled) {
-      ClientPlayerMin.enabled = enabled;
+      ClientPlayerColor.enabled = enabled;
    }
 
    public static boolean isEnabled() {
       return enabled;
    }
 
-   public static void setPosition(float x, float y) {
-      posX = x;
-      posY = y;
+   public static void setBorderWidth(float width) {
+      ClientPlayerColor.borderWidth = width;
    }
 
-   public static float getPosX() {
-      return posX;
+   public static float getBorderWidth() {
+      return borderWidth;
    }
 
-   public static float getPosY() {
-      return posY;
+   public static void setBlurIntensity(float intensity) {
+      ClientPlayerColor.blurIntensity = intensity;
    }
 
-   public static void setSize(float x, float y) {
-      sizeX = x;
-      sizeY = y;
+   public static float getBlurIntensity() {
+      return blurIntensity;
    }
 
-   public static float getSizeX() {
-      return sizeX;
+   public static void setColor(float r, float g, float b) {
+      colorR = r;
+      colorG = g;
+      colorB = b;
    }
 
-   public static float getSizeY() {
-      return sizeY;
+   public static float getColorR() {
+      return colorR;
    }
 
-   public static void setState(boolean enabled, float posX, float posY, float sizeX, float sizeY) {
+   public static float getColorG() {
+      return colorG;
+   }
+
+   public static float getColorB() {
+      return colorB;
+   }
+
+   public static void setColorFromHex(int hexColor) {
+      colorR = ((hexColor >> 16) & 0xFF) / 255.0F;
+      colorG = ((hexColor >> 8) & 0xFF) / 255.0F;
+      colorB = (hexColor & 0xFF) / 255.0F;
+   }
+
+   public static void setState(boolean enabled, float borderWidth, float blurIntensity, float r, float g, float b) {
       setEnabled(enabled);
-      setPosition(posX, posY);
-      setSize(sizeX, sizeY);
+      setBorderWidth(borderWidth);
+      setBlurIntensity(blurIntensity);
+      setColor(r, g, b);
+   }
+
+   public static void setStateWithHex(boolean enabled, float borderWidth, float blurIntensity, int hexColor) {
+      setEnabled(enabled);
+      setBorderWidth(borderWidth);
+      setBlurIntensity(blurIntensity);
+      setColorFromHex(hexColor);
    }
 }
