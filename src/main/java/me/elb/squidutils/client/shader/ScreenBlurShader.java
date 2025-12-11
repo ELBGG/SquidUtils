@@ -1,5 +1,6 @@
-package me.elb.squidutils.client;
+package me.elb.squidutils.client.shader;
 
+import me.elb.squidutils.client.data.ClientPlayerColor;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;

@@ -27,7 +27,7 @@ void main() {
 
     // Expandir el área del efecto (más grande = más hacia el centro)
     // Ajustamos el rango de smoothstep para que empiece más adentro
-    float vignette = smoothstep(0.55, 1.35, distance); // Antes era (0.4, 1.2)
+    float vignette = smoothstep(0.5, 1.30, distance); // Antes era (0.4, 1.2)
     vignette = pow(vignette, 1.2); // Curva más suave
 
     // Aplicar intensidad

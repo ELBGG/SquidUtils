@@ -1,4 +1,4 @@
-package me.elb.squidutils.client;
+package me.elb.squidutils.client.data;
 
 public class ClientPlayerTitle {
     private static boolean enabled;
@@ -6,7 +6,7 @@ public class ClientPlayerTitle {
     private static String subtitle = "";
     private static int titleColor = 0xFFFFFF;
     private static float offsetX = 0.0F;
-    private static float offsetY = -80.0F; // Más arriba por defecto
+    private static float offsetY = 0.0F; // Más arriba por defecto
     private static float titleScale = 2.0F; // Título más grande
     private static float subtitleScale = 1.0F; // Subtítulo tamaño normal
 

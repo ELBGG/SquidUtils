@@ -1,6 +1,6 @@
 package me.elb.squidutils.net;
 
-import me.elb.squidutils. client.ClientPlayerTitle;
+import me.elb.squidutils.client.data.ClientPlayerTitle;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api. networking.v1.ServerPlayNetworking;
 import net.minecraft.network. RegistryByteBuf;
@@ -72,22 +72,18 @@ public record PlayerTitlePacket(
     }
 
     public static void registerClientReceiver() {
-        ClientPlayNetworking.registerGlobalReceiver(ID, (packet, context) -> {
-            context.client().execute(() -> {
-                ClientPlayerTitle.setState(
-                        packet.enabled,
-                        packet.title,
-                        packet.subtitle,
-                        packet.titleColor,
-                        packet.offsetX,
-                        packet.offsetY,
-                        packet.titleScale,
-                        packet.subtitleScale,
-                        packet.displayDuration,
-                        packet.fadeOutDuration,
-                        packet.autoFade
-                );
-            });
-        });
+        ClientPlayNetworking.registerGlobalReceiver(ID, (packet, context) -> context.client().execute(() -> ClientPlayerTitle.setState(
+                packet.enabled,
+                packet.title,
+                packet.subtitle,
+                packet.titleColor,
+                packet.offsetX,
+                packet.offsetY,
+                packet.titleScale,
+                packet.subtitleScale,
+                packet.displayDuration,
+                packet.fadeOutDuration,
+                packet.autoFade
+        )));
     }
 }

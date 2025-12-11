@@ -1,4 +1,4 @@
-package me.elb.squidutils.client;
+package me.elb.squidutils.client.data;
 
 public class ClientPlayerColor {
    private static boolean enabled;

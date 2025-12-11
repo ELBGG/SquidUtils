@@ -1,6 +1,6 @@
 package me.elb. squidutils.net;
 
-import me.elb.squidutils.client.ClientPlayerColor;
+import me.elb.squidutils.client.data.ClientPlayerColor;
 import net.fabricmc.fabric. api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric. api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryByteBuf;
@@ -59,17 +59,13 @@ public record BlurEffectPacket(
 
     // Registrar receptor del cliente
     public static void registerClientReceiver() {
-        ClientPlayNetworking.registerGlobalReceiver(ID, (packet, context) -> {
-            context.client().execute(() -> {
-                ClientPlayerColor.setState(
-                        packet. enabled,
-                        packet.borderWidth,
-                        packet.blurIntensity,
-                        packet.colorR,
-                        packet.colorG,
-                        packet.colorB
-                );
-            });
-        });
+        ClientPlayNetworking.registerGlobalReceiver(ID, (packet, context) -> context.client().execute(() -> ClientPlayerColor.setState(
+                packet. enabled,
+                packet.borderWidth,
+                packet.blurIntensity,
+                packet.colorR,
+                packet.colorG,
+                packet.colorB
+        )));
     }
 }
