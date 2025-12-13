@@ -35,7 +35,7 @@ public class PlayerTitleRenderer {
         int baseY = (int) (screenHeight * 0.15F);
 
         float offsetX = ClientPlayerTitle.getOffsetX();
-        float offsetY = ClientPlayerTitle.getOffsetY()+15;
+        float offsetY = ClientPlayerTitle.getOffsetY()+40;
 
         MatrixStack matrices = context. getMatrices();
 
