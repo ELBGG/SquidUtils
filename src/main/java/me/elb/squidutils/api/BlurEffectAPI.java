@@ -1,13 +1,15 @@
-package me.elb.squidutils. api;
+package me.elb.squidutils.api;
 
-import me.elb.squidutils. net.BlurEffectPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
+import me. elb.squidutils.net.BlurEffectPacket;
+import net.minecraft.server. network.ServerPlayerEntity;
 
 import java.util.*;
+import java. util.concurrent.ConcurrentHashMap;
 
 public class BlurEffectAPI {
 
-    private static final Map<UUID, Long> temporaryBlurs = new HashMap<>();
+    // ✅ Cambiar HashMap a ConcurrentHashMap para evitar ConcurrentModificationException
+    private static final Map<UUID, Long> temporaryBlurs = new ConcurrentHashMap<>();
 
     /**
      * Activa el efecto de blur temporalmente
@@ -40,26 +42,20 @@ public class BlurEffectAPI {
 
         long now = System.currentTimeMillis();
 
-        // Crear lista de UUIDs a remover (evita ConcurrentModificationException)
-        List<UUID> toRemove = new ArrayList<>();
-
-        for (Map.Entry<UUID, Long> entry : temporaryBlurs.entrySet()) {
+        // ✅ Con ConcurrentHashMap, podemos usar removeIf de forma segura
+        temporaryBlurs.entrySet().removeIf(entry -> {
             UUID playerUUID = entry.getKey();
             long scheduledTime = entry.getValue();
 
             if (now >= scheduledTime) {
-                ServerPlayerEntity player = server.getPlayerManager().getPlayer(playerUUID);
+                ServerPlayerEntity player = server. getPlayerManager().getPlayer(playerUUID);
                 if (player != null) {
                     disableBlur(player);
                 }
-                toRemove.add(playerUUID);
+                return true; // Remover esta entrada
             }
-        }
-
-        // Remover después de iterar
-        for (UUID uuid :  toRemove) {
-            temporaryBlurs.remove(uuid);
-        }
+            return false; // Mantener esta entrada
+        });
     }
 
     public static void enableBlur(ServerPlayerEntity player) {
@@ -75,7 +71,7 @@ public class BlurEffectAPI {
         float g = ((hexColor >> 8) & 0xFF) / 255.0F;
         float b = (hexColor & 0xFF) / 255.0F;
 
-        BlurEffectPacket. send(player, true, borderWidth, blurIntensity, r, g, b);
+        BlurEffectPacket.send(player, true, borderWidth, blurIntensity, r, g, b);
     }
 
     public static void enableBlur(ServerPlayerEntity player, float borderWidth, float blurIntensity, float r, float g, float b) {
