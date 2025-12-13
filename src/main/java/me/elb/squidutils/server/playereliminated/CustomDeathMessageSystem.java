@@ -53,14 +53,14 @@ public class CustomDeathMessageSystem {
      */
     public static Text buildDeathMessage(ServerPlayerEntity victim) {
         String victimName = victim.getName().getString();
-        int victimNumber = NumberPlayerSystem.getPlayerNumber(victim. getUuid());
-        
+        int victimNumber = NumberPlayerSystem.getPlayerNumber(victim.getUuid());
+
         if (victimNumber >= 0) {
             String formattedNumber = NumberPlayerSystem.formatNumber(victimNumber);
-            return Text.literal(String.format("§cJugador §f#%s §f%s §celiminado",
-                formattedNumber, victimName));
+            return Text.literal(String.format("§c§l☠ §cJugador §f#%s §7(%s) §celiminado §c§l☠",
+                    formattedNumber, victimName));
         } else {
-            return Text.literal(String.format("§cJugador §f%s §celiminado", victimName));
+            return Text.literal(String.format("§c§l☠ §cJugador §f%s §celiminado §c§l☠", victimName));
         }
     }
 }

@@ -4,11 +4,13 @@
   "package": "me.elb.squidutils.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "DamageTrackerDeathMessageMixin",
     "PlayerEntityDeathMixin",
+    "PlayerInventoryMixin",
     "ServerPlayerInteractionManagerMixin"
   ],
   "client": [
+    "HandledScreenMixin",
+    "InventoryScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

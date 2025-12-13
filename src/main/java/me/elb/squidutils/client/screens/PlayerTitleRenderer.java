@@ -1,5 +1,6 @@
-package me.elb.squidutils.client.data;
+package me.elb.squidutils.client.screens;
 
+import me.elb.squidutils.client.data.ClientPlayerTitle;
 import net. minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui. DrawContext;
@@ -34,7 +35,7 @@ public class PlayerTitleRenderer {
         int baseY = (int) (screenHeight * 0.15F);
 
         float offsetX = ClientPlayerTitle.getOffsetX();
-        float offsetY = ClientPlayerTitle.getOffsetY();
+        float offsetY = ClientPlayerTitle.getOffsetY()+15;
 
         MatrixStack matrices = context. getMatrices();
 

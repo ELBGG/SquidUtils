@@ -1,14 +1,16 @@
 package me.elb.squidutils.net;
 
-import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
+import net.fabricmc.fabric.api. networking.v1.PayloadTypeRegistry;
 
 public class SquidUtilsNetwork {
 
     public static void registerPackets() {
-        PayloadTypeRegistry.playS2C().register(BlurEffectPacket.ID, BlurEffectPacket. CODEC);
+        PayloadTypeRegistry. playS2C().register(BlurEffectPacket.ID, BlurEffectPacket. CODEC);
         PayloadTypeRegistry. playS2C().register(PlayerTitlePacket.ID, PlayerTitlePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(DeathFadePacket.ID, DeathFadePacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(SoulStatePacket.ID, SoulStatePacket.CODEC);
+        PayloadTypeRegistry. playS2C().register(SoulStatePacket.ID, SoulStatePacket.CODEC);
+        PayloadTypeRegistry.playS2C().register(LimitedInventoryPacket.ID, LimitedInventoryPacket. CODEC);
+        PayloadTypeRegistry.playS2C().register(SyncWaitingRoomPayload.ID, SyncWaitingRoomPayload. CODEC); // ✅ Correcto
     }
 
     public static void registerClientReceivers() {
@@ -16,5 +18,7 @@ public class SquidUtilsNetwork {
         PlayerTitlePacket. registerClientReceiver();
         DeathFadePacket.registerClientReceiver();
         SoulStatePacket.registerClientReceiver();
+        LimitedInventoryPacket.registerClientReceiver();
+        SyncWaitingRoomPayload.registerClientReceiver(); // ✅ AÑADIR ESTO
     }
 }
