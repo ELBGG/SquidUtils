@@ -1,11 +1,11 @@
 package me.elb.squidutils.client.screens;
 
-import me.elb.squidutils.client.data.ClientPlayerTitle;
-import net. minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui. DrawContext;
-import net.minecraft.client.render.RenderTickCounter;
-import net.minecraft. client.util.math.MatrixStack;
+import me.elb.squidutils. client.data.ClientPlayerTitle;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft. client.font.TextRenderer;
+import net. minecraft.client.gui.DrawContext;
+import net.minecraft. client.render.RenderTickCounter;
+import net. minecraft.client.util.math. MatrixStack;
 
 public class PlayerTitleRenderer {
 
@@ -26,7 +26,7 @@ public class PlayerTitleRenderer {
 
         TextRenderer textRenderer = client.textRenderer;
         int screenWidth = client.getWindow().getScaledWidth();
-        int screenHeight = client.getWindow().getScaledHeight();
+        int screenHeight = client. getWindow().getScaledHeight();
 
         int centerX = screenWidth / 2;
 
@@ -35,15 +35,15 @@ public class PlayerTitleRenderer {
         int baseY = (int) (screenHeight * 0.15F);
 
         float offsetX = ClientPlayerTitle.getOffsetX();
-        float offsetY = ClientPlayerTitle.getOffsetY()+40;
+        float offsetY = ClientPlayerTitle.getOffsetY() + 65; // Cambiado de +40 a +65 (25 píxeles más abajo)
 
-        MatrixStack matrices = context. getMatrices();
+        MatrixStack matrices = context.getMatrices();
 
         // Renderizar título (más grande)
-        if (!title. isEmpty()) {
+        if (!title.isEmpty()) {
             matrices.push();
 
-            float titleScale = ClientPlayerTitle.getTitleScale();
+            float titleScale = ClientPlayerTitle. getTitleScale();
             int titleColor = ClientPlayerTitle.getTitleColor();
 
             // Aplicar alpha al color
@@ -85,12 +85,12 @@ public class PlayerTitleRenderer {
             int subtitleWidth = textRenderer.getWidth(subtitle);
             float scaledSubtitleWidth = subtitleWidth * subtitleScale;
 
-            // Posición:  debajo del título
+            // Posición: debajo del título
             float titleHeight = 9 * ClientPlayerTitle.getTitleScale();
             float subtitleX = centerX - (scaledSubtitleWidth / 2) + offsetX;
             float subtitleY = baseY + offsetY + titleHeight + 5;
 
-            matrices. translate(subtitleX, subtitleY, 0);
+            matrices.translate(subtitleX, subtitleY, 0);
             matrices.scale(subtitleScale, subtitleScale, subtitleScale);
 
             // Sombra
