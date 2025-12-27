@@ -16,7 +16,7 @@ import java.util.List;
 public class DeadCommandsConfig {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final String CONFIG_PATH = ".config/squidutils/dead.json";
+    private static final String CONFIG_PATH = "config/squidutils/dead.json";
 
     private static DeadCommandsConfig instance;
 

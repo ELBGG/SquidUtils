@@ -14,7 +14,7 @@ import java.io.IOException;
 public class WaitingHudConfig {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static final String CONFIG_PATH = ".config/squidutils/waitinghud.json";
+    private static final String CONFIG_PATH = "config/squidutils/waitinghud.json";
 
     private static WaitingHudConfig instance;
 
