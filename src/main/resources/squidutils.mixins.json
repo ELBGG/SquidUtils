@@ -5,13 +5,9 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "PlayerEntityDeathMixin",
-    "PlayerInventoryMixin",
     "ServerPlayerInteractionManagerMixin"
   ],
-  "client": [
-    "HandledScreenMixin",
-    "InventoryScreenMixin"
-  ],
+  "client": [],
   "injectors": {
     "defaultRequire": 1
   },

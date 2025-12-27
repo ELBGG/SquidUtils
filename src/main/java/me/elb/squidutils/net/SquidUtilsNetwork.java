@@ -9,8 +9,8 @@ public class SquidUtilsNetwork {
         PayloadTypeRegistry. playS2C().register(PlayerTitlePacket.ID, PlayerTitlePacket.CODEC);
         PayloadTypeRegistry.playS2C().register(DeathFadePacket.ID, DeathFadePacket.CODEC);
         PayloadTypeRegistry. playS2C().register(SoulStatePacket.ID, SoulStatePacket.CODEC);
-        PayloadTypeRegistry.playS2C().register(LimitedInventoryPacket.ID, LimitedInventoryPacket. CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncWaitingRoomPayload.ID, SyncWaitingRoomPayload. CODEC); // ✅ Correcto
+        PayloadTypeRegistry.playS2C().register(SyncWaitingRoomPayload.ID, SyncWaitingRoomPayload. CODEC);
+        PayloadTypeRegistry.playS2C().register(WaitingHudConfigPacket.ID, WaitingHudConfigPacket.CODEC);
     }
 
     public static void registerClientReceivers() {
@@ -18,7 +18,7 @@ public class SquidUtilsNetwork {
         PlayerTitlePacket. registerClientReceiver();
         DeathFadePacket.registerClientReceiver();
         SoulStatePacket.registerClientReceiver();
-        LimitedInventoryPacket.registerClientReceiver();
-        SyncWaitingRoomPayload.registerClientReceiver(); // ✅ AÑADIR ESTO
+        SyncWaitingRoomPayload.registerClientReceiver();
+        WaitingHudConfigPacket.registerClientReceiver();
     }
 }

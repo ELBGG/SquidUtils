@@ -57,10 +57,10 @@ public class CustomDeathMessageSystem {
 
         if (victimNumber >= 0) {
             String formattedNumber = NumberPlayerSystem.formatNumber(victimNumber);
-            return Text.literal(String.format("§c§l☠ §cJugador §f#%s §7(%s) §celiminado §c§l☠",
+            return Text.literal(String.format("§cJugador §f#%s §7(%s) §celiminado",
                     formattedNumber, victimName));
         } else {
-            return Text.literal(String.format("§c§l☠ §cJugador §f%s §celiminado §c§l☠", victimName));
+            return Text.literal(String.format("§cJugador §f%s §celiminado", victimName));
         }
     }
 }

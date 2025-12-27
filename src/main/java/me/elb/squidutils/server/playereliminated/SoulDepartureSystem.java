@@ -6,9 +6,9 @@ import net. minecraft.server.network.ServerPlayerEntity;
 import net.minecraft. util.math.Vec3d;
 import net.minecraft.world.GameMode;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Sistema "Alma Ida" - El jugador se convierte en espectador con inercia al morir
@@ -16,7 +16,7 @@ import java.util.UUID;
 public class SoulDepartureSystem {
 
     private static boolean active = false;
-    private static final Map<UUID, SoulData> activeSouls = new HashMap<>();
+    private static final Map<UUID, SoulData> activeSouls = new ConcurrentHashMap<>();
 
     // Duraciones
     private static final int DELAY_BEFORE_SPECTATOR = 2; // 2 ticks de delay para recibir knockback

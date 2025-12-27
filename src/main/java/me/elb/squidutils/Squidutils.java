@@ -5,8 +5,11 @@ import me.elb.squidutils.command.SquidUtilsCommand;
 import me.elb.squidutils.command. WaitingRoomCommand;
 import me.elb.squidutils.net.SquidUtilsNetwork;
 import me. elb.squidutils.server.numberplayer.NumberPlayerEvents;
+import me.elb.squidutils.server.numberplayer.NumberPlayerSystem;
+import me.elb.squidutils.server.playereliminated.CustomDeathMessageSystem;
 import me.elb. squidutils.server.playereliminated.SoulDepartureSystem;
 import me.elb.squidutils.server.wait.WaitingRoomManager;
+import me.elb.squidutils.server.config.WaitingHudConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event. lifecycle.v1.ServerLifecycleEvents;
@@ -39,6 +42,17 @@ public class Squidutils implements ModInitializer {
 
         ServerLifecycleEvents.SERVER_STARTED. register(server -> {
             System.out.println("[SquidUtils] Server fully started and ready");
+
+            // Cargar configuración
+            WaitingHudConfig.load();
+            System.out.println("[SquidUtils] Configuration loaded");
+
+            // Auto-iniciar sistemas
+            NumberPlayerSystem.start(server);
+            System.out.println("[SquidUtils] NumberPlayerSystem auto-started");
+
+            CustomDeathMessageSystem.activate();
+            System.out.println("[SquidUtils] CustomDeathMessageSystem auto-started");
         });
 
         // ✅ Tick events para otros sistemas

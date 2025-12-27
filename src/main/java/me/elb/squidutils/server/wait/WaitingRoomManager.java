@@ -8,6 +8,7 @@ import me.elb.squidutils. net.SyncWaitingRoomPayload;
 import me.elb.squidutils.client.data.GameStage;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WaitingRoomManager {
     private static final WaitingRoomManager INSTANCE = new WaitingRoomManager();
@@ -15,7 +16,7 @@ public class WaitingRoomManager {
     private MinecraftServer server;
     private int maxPlayers = 10;
     private GameStage stage = GameStage.LOBBY;
-    private final Set<UUID> playerUUIDs = new HashSet<>();
+    private final Set<UUID> playerUUIDs = ConcurrentHashMap.newKeySet();
     private boolean isActive = false;
 
     public static WaitingRoomManager getInstance() {

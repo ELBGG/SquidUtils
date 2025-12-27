@@ -26,11 +26,20 @@ public class NumberPlayerSystem {
     private static ScoreboardObjective numberObjective = null;
 
     /**
+     * Activa el sistema (auto-inicio sin executor)
+     */
+    public static void start(MinecraftServer server) {
+        start(server, null);
+    }
+
+    /**
      * Activa el sistema
      */
     public static void start(MinecraftServer server, ServerPlayerEntity executor) {
         if (active) {
-            executor.sendMessage(Text.literal("§c⚠ El sistema de números ya está activo"));
+            if (executor != null) {
+                executor.sendMessage(Text.literal("§c⚠ El sistema de números ya está activo"));
+            }
             return;
         }
 
