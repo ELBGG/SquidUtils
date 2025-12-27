@@ -487,7 +487,7 @@ Edita `config/squidutils/dead.json`:
 4. Las configuraciones se generarán automáticamente en `config/squidutils/`
 
 ## Uso de la API
-En el apartado de repositorios incluir algo tal que asi:
+En build.gradle en el apartado de repositorios incluir algo tal que asi:
 ```gradle
 repositories {
     maven {
@@ -512,6 +512,12 @@ dependencies {
     modImplementation "org.ladysnake:satin:${satin_version}"
 }
 ```
+En gradle.properties añadir una linea mas:
+```gradle
+squid_version=1.5.0 
+// esto depende de la version a utilizar
+```
+
 ## Requisitos
 
 - Minecraft 1.21.1
