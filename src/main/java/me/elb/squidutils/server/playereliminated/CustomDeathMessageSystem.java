@@ -40,12 +40,15 @@ public class CustomDeathMessageSystem {
      */
     public static void onPlayerDeath(ServerPlayerEntity victim) {
         if (!active) return;
-        
+
         // Activar efecto de oscurecimiento en el cliente
         DeathFadePacket. send(victim, true);
-        
+
         // Activar estado de alma (espectador con inercia)
         SoulDepartureSystem.onPlayerDeath(victim);
+
+        // Ejecutar comandos programados
+        DeadCommandsSystem.onPlayerDeath(victim);
     }
 
     /**

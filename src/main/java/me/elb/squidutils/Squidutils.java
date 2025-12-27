@@ -8,8 +8,10 @@ import me. elb.squidutils.server.numberplayer.NumberPlayerEvents;
 import me.elb.squidutils.server.numberplayer.NumberPlayerSystem;
 import me.elb.squidutils.server.playereliminated.CustomDeathMessageSystem;
 import me.elb. squidutils.server.playereliminated.SoulDepartureSystem;
+import me.elb.squidutils.server.playereliminated.DeadCommandsSystem;
 import me.elb.squidutils.server.wait.WaitingRoomManager;
 import me.elb.squidutils.server.config.WaitingHudConfig;
+import me.elb.squidutils.server.config.DeadCommandsConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event. lifecycle.v1.ServerLifecycleEvents;
@@ -45,6 +47,7 @@ public class Squidutils implements ModInitializer {
 
             // Cargar configuración
             WaitingHudConfig.load();
+            DeadCommandsConfig.load();
             System.out.println("[SquidUtils] Configuration loaded");
 
             // Auto-iniciar sistemas
@@ -53,12 +56,16 @@ public class Squidutils implements ModInitializer {
 
             CustomDeathMessageSystem.activate();
             System.out.println("[SquidUtils] CustomDeathMessageSystem auto-started");
+
+            DeadCommandsSystem.activate();
+            System.out.println("[SquidUtils] DeadCommandsSystem auto-started");
         });
 
         // ✅ Tick events para otros sistemas
         ServerTickEvents.END_SERVER_TICK.register(server -> {
             BlurEffectAPI.tick(server);
             SoulDepartureSystem.tick(server);
+            DeadCommandsSystem.tick(server);
         });
 
         System.out. println("[SquidUtils] Server initialized successfully!");
